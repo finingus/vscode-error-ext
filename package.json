@@ -2,8 +2,8 @@
   "name": "vscode-error-ext",
   "displayName": "Error Navigator",
   "description": "Shows which error you're on and how many the file has in the status bar, with arrows to jump between them.",
-  "version": "0.0.1",
-  "publisher": "local",
+  "version": "0.0.2",
+  "publisher": "MiguelMF",
   "engines": {
     "vscode": "^1.90.0"
   },
@@ -37,8 +37,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "check": "bun run typecheck && bun run lint && bun run format:check",
+    "format:write": "prettier --write .",
+    "check": "bun run typecheck && bun run lint && bun run format:write",
     "package": "bun run check && bun run compile && bunx @vscode/vsce package --no-dependencies --skip-license --allow-missing-repository"
   },
   "devDependencies": {

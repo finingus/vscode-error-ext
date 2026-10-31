@@ -9,6 +9,7 @@ const BASE_PRIORITY = Number.MIN_SAFE_INTEGER;
 
 function createItem(
   id: string,
+  name: string,
   priority: number,
   text: string,
   command: string,
@@ -19,7 +20,7 @@ function createItem(
     priority,
   );
 
-  item.name = "Error Navigator";
+  item.name = name;
   item.text = text;
   item.command = command;
 
@@ -28,6 +29,7 @@ function createItem(
 
 const prevItem = createItem(
   "errorNav.previous",
+  "Error Navigator: Previous",
   BASE_PRIORITY + 2,
   "$(arrow-up)",
   "errorNav.previous",
@@ -35,6 +37,7 @@ const prevItem = createItem(
 
 const counterItem = createItem(
   "errorNav.counter",
+  "Error Navigator: Counter",
   BASE_PRIORITY + 1,
   "",
   "workbench.actions.view.problems",
@@ -42,6 +45,7 @@ const counterItem = createItem(
 
 const nextItem = createItem(
   "errorNav.next",
+  "Error Navigator: Next",
   BASE_PRIORITY,
   "$(arrow-down)",
   "errorNav.next",
@@ -51,21 +55,46 @@ prevItem.tooltip = "Previous Error";
 nextItem.tooltip = "Next Error";
 counterItem.color = new vscode.ThemeColor("errorForeground");
 
+const items = [prevItem, counterItem, nextItem];
+let itemsVisible = false;
+let cached: { uri: string; problems: vscode.Diagnostic[] } | undefined;
+let lastTarget = -1;
+
 function getProblems(uri: vscode.Uri): vscode.Diagnostic[] {
-  return vscode.languages
-    .getDiagnostics(uri)
-    .filter(
-      (d) =>
-        d.severity === vscode.DiagnosticSeverity.Error ||
-        d.severity === vscode.DiagnosticSeverity.Warning,
-    )
-    .sort((a, b) => a.range.start.compareTo(b.range.start));
+  const key = uri.toString();
+
+  if (cached?.uri !== key) {
+    cached = {
+      uri: key,
+      problems: vscode.languages
+        .getDiagnostics(uri)
+        .filter(
+          (d) =>
+            d.severity === vscode.DiagnosticSeverity.Error ||
+            d.severity === vscode.DiagnosticSeverity.Warning,
+        )
+        .sort((a, b) => a.range.start.compareTo(b.range.start)),
+    };
+
+    lastTarget = -1;
+  }
+
+  return cached.problems;
 }
 
 function currentIndex(
   errors: vscode.Diagnostic[],
   pos: vscode.Position,
 ): number {
+  // Overlapping diagnostics would otherwise always resolve to the first one, trapping navigation.
+  if (
+    lastTarget !== -1 &&
+    lastTarget < errors.length &&
+    errors[lastTarget].range.start.isEqual(pos)
+  ) {
+    return lastTarget;
+  }
+
   const i = errors.findIndex((d) => d.range.contains(pos));
 
   return i !== -1
@@ -73,14 +102,27 @@ function currentIndex(
     : errors.findIndex((d) => d.range.start.line === pos.line);
 }
 
+function setVisible(visible: boolean): void {
+  if (itemsVisible === visible) {
+    return;
+  }
+
+  itemsVisible = visible;
+
+  for (const item of items) {
+    if (visible) {
+      item.show();
+    } else {
+      item.hide();
+    }
+  }
+}
+
 function update(): void {
   const editor = vscode.window.activeTextEditor;
-  const items = [prevItem, counterItem, nextItem];
 
   if (!editor) {
-    items.forEach((item) => {
-      item.hide();
-    });
+    setVisible(false);
 
     return;
   }
@@ -91,16 +133,23 @@ function update(): void {
   const current = String(index + 1).padStart(width, FIGURE_SPACE);
   const total = String(errors.length).padEnd(width, FIGURE_SPACE);
 
-  counterItem.text = `${current}/${total}`;
+  const text = `${current}/${total}`;
 
-  counterItem.tooltip =
+  const tooltip =
     index === -1
       ? `${errors.length} problem${errors.length === 1 ? "" : "s"} in file. Click to open the Problems panel.`
       : `Problem ${index + 1} of ${errors.length}. Click to open the Problems panel.`;
 
-  items.forEach((item) => {
-    item.show();
-  });
+  // Every setter call is an IPC round-trip to the renderer, and this runs on each cursor move.
+  if (counterItem.text !== text) {
+    counterItem.text = text;
+  }
+
+  if (counterItem.tooltip !== tooltip) {
+    counterItem.tooltip = tooltip;
+  }
+
+  setVisible(true);
 }
 
 async function reveal(
@@ -156,6 +205,8 @@ async function navigate(direction: 1 | -1): Promise<void> {
     target = prev === -1 ? n - 1 : prev;
   }
 
+  lastTarget = target;
+
   await reveal(editor, errors[target].range);
 }
 
@@ -173,9 +224,11 @@ export function activate(context: vscode.ExtensionContext): void {
       }
     }),
     vscode.languages.onDidChangeDiagnostics((e) => {
-      const active = vscode.window.activeTextEditor?.document.uri.toString();
+      const key = cached?.uri;
 
-      if (active && e.uris.some((u) => u.toString() === active)) {
+      if (key !== undefined && e.uris.some((u) => u.toString() === key)) {
+        cached = undefined;
+
         update();
       }
     }),
