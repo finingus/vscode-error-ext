@@ -1,0 +1,56 @@
+{
+  "name": "vscode-error-ext",
+  "displayName": "Error Navigator",
+  "description": "Shows which error you're on and how many the file has in the status bar, with arrows to jump between them.",
+  "version": "0.0.1",
+  "publisher": "local",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "errorNav.previous",
+        "title": "Previous Error",
+        "category": "Error Navigator",
+        "icon": "$(arrow-up)"
+      },
+      {
+        "command": "errorNav.next",
+        "title": "Next Error",
+        "category": "Error Navigator",
+        "icon": "$(arrow-down)"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "typecheck": "tsc -p ./ --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "bun run typecheck && bun run lint && bun run format:check",
+    "package": "bun run check && bun run compile && bunx @vscode/vsce package --no-dependencies --skip-license --allow-missing-repository"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "@types/node": "^20.0.0",
+    "@types/vscode": "1.90.0",
+    "eslint": "^10.14.0",
+    "eslint-config-prettier": "^10.1.8",
+    "jiti": "^2.7.0",
+    "prettier": "^3.9.10",
+    "typescript": "^5.6.0",
+    "typescript-eslint": "^8.72.1"
+  }
+}
