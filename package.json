@@ -7,6 +7,17 @@
   "engines": {
     "vscode": "^1.90.0"
   },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "typecheck": "tsc -p ./ --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:write": "prettier --write .",
+    "check": "bun run typecheck && bun run lint && bun run format:write",
+    "package": "bun run check && bun run compile && bunx @vscode/vsce package --no-dependencies --skip-license --allow-missing-repository"
+  },
   "categories": [
     "Other"
   ],
@@ -38,17 +49,6 @@
         "icon": "$(arrow-down)"
       }
     ]
-  },
-  "scripts": {
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "typecheck": "tsc -p ./ --noEmit",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "format:write": "prettier --write .",
-    "check": "bun run typecheck && bun run lint && bun run format:write",
-    "package": "bun run check && bun run compile && bunx @vscode/vsce package --no-dependencies --skip-license --allow-missing-repository"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
