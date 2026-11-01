@@ -1,9 +1,9 @@
 {
-  "name": "vscode-error-ext",
-  "displayName": "Error Navigator",
+  "name": "error-navigator",
+  "displayName": "File Error Navigator",
   "description": "Shows which error you're on and how many the file has in the status bar, with arrows to jump between them.",
   "version": "0.0.2",
-  "publisher": "MiguelMF",
+  "publisher": "Finingus",
   "engines": {
     "vscode": "^1.90.0"
   },
@@ -16,6 +16,12 @@
   "main": "./out/extension.js",
   "repository": {
     "directory": "https://github.com/finingus/vscode-error-ext"
+  },
+  "icon": "assets/icon.png",
+  "preview": false,
+  "galleryBanner": {
+    "color": "#de1230",
+    "theme": "dark"
   },
   "contributes": {
     "commands": [

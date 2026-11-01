@@ -56,7 +56,15 @@ nextItem.tooltip = "Next Error";
 counterItem.color = new vscode.ThemeColor("errorForeground");
 
 const items = [prevItem, counterItem, nextItem];
+
+const arrows = [
+  { item: prevItem, command: "errorNav.previous", tooltip: "Previous Error" },
+  { item: nextItem, command: "errorNav.next", tooltip: "Next Error" },
+];
+
+const DISABLED_COLOR = new vscode.ThemeColor("disabledForeground");
 let itemsVisible = false;
+let arrowsEnabled = true;
 let cached: { uri: string; problems: vscode.Diagnostic[] } | undefined;
 let lastTarget = -1;
 
@@ -118,6 +126,21 @@ function setVisible(visible: boolean): void {
   }
 }
 
+function setArrowsEnabled(enabled: boolean): void {
+  if (arrowsEnabled === enabled) {
+    return;
+  }
+
+  arrowsEnabled = enabled;
+
+  // Status bar items have no disabled state, so drop the command and dim the icon instead.
+  for (const { item, command, tooltip } of arrows) {
+    item.command = enabled ? command : undefined;
+    item.color = enabled ? undefined : DISABLED_COLOR;
+    item.tooltip = enabled ? tooltip : "No problems in file";
+  }
+}
+
 function update(): void {
   const editor = vscode.window.activeTextEditor;
 
@@ -148,6 +171,8 @@ function update(): void {
   if (counterItem.tooltip !== tooltip) {
     counterItem.tooltip = tooltip;
   }
+
+  setArrowsEnabled(errors.length > 0);
 
   setVisible(true);
 }
