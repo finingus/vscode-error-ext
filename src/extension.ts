@@ -30,7 +30,7 @@ function createItem(
 const prevItem = createItem(
   "errorNav.previous",
   "Error Navigator: Previous",
-  BASE_PRIORITY + 2,
+  BASE_PRIORITY + 1,
   "$(arrow-up)",
   "errorNav.previous",
 );
@@ -38,7 +38,7 @@ const prevItem = createItem(
 const counterItem = createItem(
   "errorNav.counter",
   "Error Navigator: Counter",
-  BASE_PRIORITY + 1,
+  BASE_PRIORITY + 2,
   "",
   "workbench.actions.view.problems",
 );
@@ -55,7 +55,7 @@ prevItem.tooltip = "Previous Error";
 nextItem.tooltip = "Next Error";
 counterItem.color = new vscode.ThemeColor("errorForeground");
 
-const items = [prevItem, counterItem, nextItem];
+const items = [counterItem, prevItem, nextItem];
 
 const arrows = [
   { item: prevItem, command: "errorNav.previous", tooltip: "Previous Error" },

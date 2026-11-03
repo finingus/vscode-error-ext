@@ -2,7 +2,7 @@
   "name": "error-navigator",
   "displayName": "File Error Navigator",
   "description": "Shows which error you're on and how many the file has in the status bar, with arrows to jump between them.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "Finingus",
   "engines": {
     "vscode": "^1.90.0"
