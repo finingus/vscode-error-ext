@@ -2,7 +2,7 @@
   "name": "error-navigator",
   "displayName": "File Error Navigator",
   "description": "Shows which error you're on and how many the file has in the status bar, with arrows to jump between them.",
-  "version": "0.0.4",
+  "version": "0.0.51",
   "publisher": "Finingus",
   "engines": {
     "vscode": "^1.90.0"
@@ -26,7 +26,8 @@
   ],
   "main": "./out/extension.js",
   "repository": {
-    "directory": "https://github.com/finingus/vscode-error-ext"
+    "type": "git",
+    "url": "https://github.com/finingus/vscode-error-ext.git"
   },
   "icon": "assets/icon.png",
   "preview": false,
@@ -47,6 +48,28 @@
         "title": "Next Error",
         "category": "Error Navigator",
         "icon": "$(arrow-down)"
+      }
+    ],
+    "configuration": {
+      "title": "Error Navigator",
+      "properties": {
+        "errorNav.enableKeybindings": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Enable the default keybindings for **Previous Error** (`Ctrl+Alt+PageDown`) and **Next Error** (`Ctrl+Alt+PageUp`). Change the keys in the Keyboard Shortcuts editor by searching for `errorNav`."
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "errorNav.previous",
+        "key": "ctrl+alt+pagedown",
+        "when": "editorTextFocus && config.errorNav.enableKeybindings"
+      },
+      {
+        "command": "errorNav.next",
+        "key": "ctrl+alt+pageup",
+        "when": "editorTextFocus && config.errorNav.enableKeybindings"
       }
     ]
   },
