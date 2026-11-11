@@ -17,8 +17,8 @@ There are two commands, both in the Command Palette:
 
 They also come with default keybindings, which are on unless you set `errorNav.enableKeybindings` to `false`. They work whenever an editor has focus:
 
-- Previous: `Ctrl+Alt+PageDown`
-- Next: `Ctrl+Alt+PageUp`
+- Previous: `Ctrl+Alt+PageUp`
+- Next: `Ctrl+Alt+PageDown`
 
 To use other keys, open Keyboard Shortcuts (`Ctrl+K Ctrl+S`) and search for `errorNav`. If you write your own binding in `keybindings.json`, it ignores the setting unless you add `config.errorNav.enableKeybindings` to its `when` clause:
 

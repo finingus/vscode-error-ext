@@ -56,18 +56,18 @@
         "errorNav.enableKeybindings": {
           "type": "boolean",
           "default": true,
-          "markdownDescription": "Enable the default keybindings for **Previous Error** (`Ctrl+Alt+PageDown`) and **Next Error** (`Ctrl+Alt+PageUp`). Change the keys in the Keyboard Shortcuts editor by searching for `errorNav`."
+          "markdownDescription": "Enable the default keybindings for **Previous Error** (`Ctrl+Alt+PageUp`) and **Next Error** (`Ctrl+Alt+PageDown`). Change the keys in the Keyboard Shortcuts editor by searching for `errorNav`."
         }
       }
     },
     "keybindings": [
       {
-        "command": "errorNav.previous",
+        "command": "errorNav.next",
         "key": "ctrl+alt+pagedown",
         "when": "editorTextFocus && config.errorNav.enableKeybindings"
       },
       {
-        "command": "errorNav.next",
+        "command": "errorNav.previous",
         "key": "ctrl+alt+pageup",
         "when": "editorTextFocus && config.errorNav.enableKeybindings"
       }
